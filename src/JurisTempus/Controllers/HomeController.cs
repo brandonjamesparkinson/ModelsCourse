@@ -9,6 +9,7 @@ using JurisTempus.Data;
 using Microsoft.EntityFrameworkCore;
 using JurisTempus.ViewModels;
 using AutoMapper;
+using JurisTempus.Data.Entities;
 
 namespace JurisTempus.Controllers
 {
@@ -51,26 +52,40 @@ namespace JurisTempus.Controllers
     [HttpPost("editor/{id:int}")]
     public async Task<IActionResult> ClientEditor(int id, ClientViewModel model)
     {
-      // Save changes to the Database
-      var oldClient = await _context.Clients
-        .Include(_c => _c.Address)
-        .Where(c => c.Id == id)
-        .FirstOrDefaultAsync();
-
-      if (oldClient != null)
+      if (ModelState.IsValid)
       {
-        // Update the DB
-        _mapper.Map(model, oldClient); // Copy changes
+        // Save changes to the Database
+        var oldClient = await _context.Clients
+          .Include(_c => _c.Address)
+          .Where(c => c.Id == id)
+          .FirstOrDefaultAsync();
 
-        if (await _context.SaveChangesAsync() > 0)
+        if (oldClient != null)
         {
-          return RedirectToAction("Index");
+          // Update the DB
+          _mapper.Map(model, oldClient); // Copy changes
+
+          if (await _context.SaveChangesAsync() > 0)
+          {
+            return RedirectToAction("Index");
+          }
+        }
+        else
+        {
+          // Create a new one.
+          var newClient = _mapper.Map<Client>(model);
+          _context.Add(newClient);
+
+          if (await _context.SaveChangesAsync() > 0)
+          {
+            return RedirectToAction("Index");
+          }
         }
       }
       return View();
     }
 
-      [HttpGet("timesheet")]
+    [HttpGet("timesheet")]
     public IActionResult Timesheet()
     {
       return View();
