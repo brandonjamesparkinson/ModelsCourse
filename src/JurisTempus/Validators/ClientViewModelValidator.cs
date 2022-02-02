@@ -1,15 +1,23 @@
 using FluentValidation;
+using JurisTempus.Data;
 using JurisTempus.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace JurisTempus.Validators
 {
   public class ClientViewModelValidator : AbstractValidator<ClientViewModel>
   {
-    public ClientViewModelValidator()
+    public ClientViewModelValidator(BillingContext ctx)
     {
       RuleFor(c => c.Name).NotEmpty()
                           .MinimumLength(5)
-                          .MaximumLength(100);
+                          .MaximumLength(100)
+                          .MustAsync(async (model, value, x) =>
+                          {
+                            return !(await ctx.Clients.AnyAsync(c => c.Name == value &&
+                                                                c.Id != model.Id));
+                          })
+                          .WithMessage("Names must be unique");
 
       RuleFor(c => c.ContactName).MaximumLength(50);
 

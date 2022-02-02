@@ -37,6 +37,7 @@ namespace JurisTempus
       services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
       services.AddRazorPages();
+
       services.AddControllersWithViews()
         .AddNewtonsoftJson(cfg => cfg.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore)
         .AddFluentValidation(cfg => cfg.RegisterValidatorsFromAssemblyContaining<CaseViewModelValidator>());
