@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using JurisTempus.Data;
 using Microsoft.AspNetCore.Builder;
@@ -30,6 +31,8 @@ namespace JurisTempus
       {
         cfg.UseSqlServer(Configuration.GetConnectionString("JurisDb"));
       });
+
+      services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
       services.AddRazorPages();
       services.AddControllersWithViews()
