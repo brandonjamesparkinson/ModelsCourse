@@ -1,4 +1,16 @@
-﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
-// for details on configuring this project to bundle and minify static web assets.
+class ClientViewModel {
+  constructor(data) {
+    this.id = data.id;
+    this.name = data.name;
+    this.contact = data.contact;
+    this.phone = data.phone;
+  }
+}
 
-// Write your JavaScript code.
+let client = new ClientViewModel({
+  id: 1,
+  name: "Bob's Pizza",
+  contact: "Brandon",
+  phone: "555-1212"
+});
+
